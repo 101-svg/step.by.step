@@ -1,0 +1,128 @@
+-- Create the main GUI container
+local ScreenGui = Instance.new("ScreenGui")
+local MainFrame = Instance.new("Frame")
+local UICorner = Instance.new("UICorner")
+
+-- Set properties for the main frame
+ScreenGui.Name = "CustomUI"
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+MainFrame.Name = "MainFrame"
+MainFrame.Parent = ScreenGui
+MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+MainFrame.Size = UDim2.new(0, 400, 0, 300)
+MainFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
+MainFrame.BorderSizePixel = 0
+MainFrame.Active = true
+MainFrame.Draggable = true -- Enable dragging
+
+-- Add rounded corners to MainFrame
+UICorner.Parent = MainFrame
+UICorner.CornerRadius = UDim.new(0, 10)
+
+-- Add a tab selector
+local TabHolder = Instance.new("Frame")
+local TabHolderCorner = Instance.new("UICorner")
+TabHolder.Name = "TabHolder"
+TabHolder.Parent = MainFrame
+TabHolder.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+TabHolder.Size = UDim2.new(0, 400, 0, 30)
+TabHolder.BorderSizePixel = 0
+
+-- Add rounded corners to TabHolder
+TabHolderCorner.Parent = TabHolder
+TabHolderCorner.CornerRadius = UDim.new(0, 10)
+
+local Tabs = {"Visuals", "Aimbot", "Misc", "Settings"}
+local Buttons = {}
+
+for i, tab in ipairs(Tabs) do
+    local Button = Instance.new("TextButton")
+    local ButtonCorner = Instance.new("UICorner")
+    Button.Name = tab .. "Button"
+    Button.Parent = TabHolder
+    Button.Text = tab
+    Button.Size = UDim2.new(0, 100, 0, 30)
+    Button.Position = UDim2.new(0, (i - 1) * 100, 0, 0)
+    Button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Button.BorderSizePixel = 0
+    
+    -- Add rounded corners to each button
+    ButtonCorner.Parent = Button
+    ButtonCorner.CornerRadius = UDim.new(0, 5)
+
+    table.insert(Buttons, Button)
+end
+
+-- Add a content holder for tab pages
+local ContentHolder = Instance.new("Frame")
+local ContentHolderCorner = Instance.new("UICorner")
+ContentHolder.Name = "ContentHolder"
+ContentHolder.Parent = MainFrame
+ContentHolder.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+ContentHolder.Size = UDim2.new(0, 400, 0, 270)
+ContentHolder.Position = UDim2.new(0, 0, 0, 30)
+ContentHolder.BorderSizePixel = 0
+
+-- Add rounded corners to ContentHolder
+ContentHolderCorner.Parent = ContentHolder
+ContentHolderCorner.CornerRadius = UDim.new(0, 10)
+
+-- Example tab content for "Misc"
+local MiscPage = Instance.new("Frame")
+local MiscPageCorner = Instance.new("UICorner")
+MiscPage.Name = "MiscPage"
+MiscPage.Parent = ContentHolder
+MiscPage.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+MiscPage.Size = UDim2.new(1, 0, 1, 0)
+MiscPage.Visible = true
+
+-- Add rounded corners to MiscPage
+MiscPageCorner.Parent = MiscPage
+MiscPageCorner.CornerRadius = UDim.new(0, 10)
+
+local WalkSpeedLabel = Instance.new("TextLabel")
+local WalkSpeedLabelCorner = Instance.new("UICorner")
+WalkSpeedLabel.Parent = MiscPage
+WalkSpeedLabel.Text = "WalkSpeed Value"
+WalkSpeedLabel.Size = UDim2.new(0, 150, 0, 30)
+WalkSpeedLabel.Position = UDim2.new(0, 20, 0, 20)
+WalkSpeedLabel.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+WalkSpeedLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+WalkSpeedLabel.BorderSizePixel = 0
+
+-- Add rounded corners to WalkSpeedLabel
+WalkSpeedLabelCorner.Parent = WalkSpeedLabel
+WalkSpeedLabelCorner.CornerRadius = UDim.new(0, 5)
+
+local WalkSpeedSlider = Instance.new("TextBox")
+local WalkSpeedSliderCorner = Instance.new("UICorner")
+WalkSpeedSlider.Parent = MiscPage
+WalkSpeedSlider.Text = "16"
+WalkSpeedSlider.Size = UDim2.new(0, 100, 0, 30)
+WalkSpeedSlider.Position = UDim2.new(0, 200, 0, 20)
+WalkSpeedSlider.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+WalkSpeedSlider.TextColor3 = Color3.fromRGB(255, 255, 255)
+WalkSpeedSlider.BorderSizePixel = 0
+
+-- Add rounded corners to WalkSpeedSlider
+WalkSpeedSliderCorner.Parent = WalkSpeedSlider
+WalkSpeedSliderCorner.CornerRadius = UDim.new(0, 5)
+
+-- Add functionality for tab switching
+for _, button in ipairs(Buttons) do
+    button.MouseButton1Click:Connect(function()
+        for _, page in ipairs(ContentHolder:GetChildren()) do
+            if page:IsA("Frame") then
+                page.Visible = false
+            end
+        end
+        local SelectedPage = ContentHolder:FindFirstChild(button.Name:gsub("Button", "Page"))
+        if SelectedPage then
+            SelectedPage.Visible = true
+        end
+    end)
+end
+
+return ScreenGui
