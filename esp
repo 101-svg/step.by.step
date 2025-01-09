@@ -1,0 +1,60 @@
+-- LocalScript in StarterPlayerScripts
+local playerService = game:GetService("Players")
+local localPlayer = playerService.LocalPlayer
+local highlightDistance = 120 -- Distance for ESP highlights
+
+-- Function to add highlight to a character
+local function addHighlight(character)
+    if character:FindFirstChild("HumanoidRootPart") and not character:FindFirstChild("Highlight") then
+        local highlight = Instance.new("Highlight")
+        highlight.Adornee = character
+        highlight.FillColor = Color3.new(1, 0.5, 0.5) -- Light red highlight color
+        highlight.OutlineColor = Color3.new(1, 1, 1) -- White outline
+        highlight.FillTransparency = 0.3
+        highlight.OutlineTransparency = 0.2
+        highlight.Parent = character
+    end
+end
+
+-- Function to remove highlights from a character
+local function removeHighlight(character)
+    for _, child in ipairs(character:GetChildren()) do
+        if child:IsA("Highlight") then
+            child:Destroy()
+        end
+    end
+end
+
+-- Function to check distance between two points
+local function isWithinDistance(playerCharacter, otherCharacter)
+    local playerRoot = playerCharacter:FindFirstChild("HumanoidRootPart")
+    local otherRoot = otherCharacter:FindFirstChild("HumanoidRootPart")
+
+    if playerRoot and otherRoot then
+        local distance = (playerRoot.Position - otherRoot.Position).Magnitude
+        return distance <= highlightDistance
+    end
+    return false
+end
+
+-- Monitor and update highlights
+local function updateHighlights()
+    local playerCharacter = localPlayer.Character or localPlayer.CharacterAdded:Wait()
+
+    for _, otherPlayer in ipairs(playerService:GetPlayers()) do
+        if otherPlayer ~= localPlayer and otherPlayer.Character then
+            local otherCharacter = otherPlayer.Character
+
+            if isWithinDistance(playerCharacter, otherCharacter) then
+                addHighlight(otherCharacter)
+            else
+                removeHighlight(otherCharacter)
+            end
+        end
+    end
+end
+
+-- Continuously update highlights based on proximity
+game:GetService("RunService").RenderStepped:Connect(function()
+    updateHighlights()
+end)
