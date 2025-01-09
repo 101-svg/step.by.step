@@ -1,0 +1,2 @@
+local UIS = game:GetService("UserInputService")
+local screenGui = game.Players.LocalPlayer.PlayerGui:
